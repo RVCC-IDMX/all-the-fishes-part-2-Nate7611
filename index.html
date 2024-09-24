@@ -128,9 +128,25 @@
         base.x = 0;
         base.y = height;
 
+        let buttonDragged = false;
+
         let fish1 = new Fish("img/fish1.png");
             fish1.x = 1000;
             fish1.scale.set(0.3);
+            fish1.on("pointerdown", () => {
+                buttonDragged = true;
+            })
+            fish1.on("pointerup", () => {
+                buttonDragged = false;
+            })
+            fish1.on("pointerupoutside", () => {
+                buttonDragged = false;
+            })
+            fish1.on("pointermove", (event) => {
+                if (buttonDragged == false) return;
+                fish1.x = event.client.x;
+                fish1.y = event.client.y;
+            })
 
         let fish2 = new Fish("img/fish2.png");
             fish2.x = 600;
@@ -216,7 +232,10 @@
         function loop() {
             counter++;
 
-            fish1.y = (Math.sin(counter / 80) * 20) + 325;
+            if (!buttonDragged) {
+                fish1.y = (Math.sin(counter / 80) * 20) + 325;
+            }
+            
             fish1.angle = (Math.sin(counter / 80) * 2);
 
             fish2.y = (Math.sin(counter / 70) * 30) + 150;
@@ -240,11 +259,11 @@
                 hitRight1 = false;
             }
 
-            if (!hitRight1) {
+            if (!hitRight1 && !buttonDragged) {
                 fish1.x += 0.4;
                 fish1.scale.x = ((Math.sin(counter / 100) * -.01) - .30);
             }
-            else {
+            else if (!buttonDragged) {
                 fish1.x -= 0.4;
                 fish1.scale.x = ((Math.sin(counter / 100) * -.01) + .30);
             }
