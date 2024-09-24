@@ -7,241 +7,299 @@
     <title>All the Fishes</title>
     <script src="https://pixijs.download/release/pixi.js"></script>
 </head>
+
 <body>
 
-<script type="module">
+    <script type="module">
 
-    const height = 600;
-    const width = 1500;
+        const height = 600;
+        const width = 1500;
 
-    //The App
-    const app = new PIXI.Application();
-    await app.init({
-        width: width,
-        height: height,
-        backgroundColor: 0x127560
-    });
+        //The App
+        const app = new PIXI.Application();
+        await app.init({
+            width: width,
+            height: height + 200,
+            backgroundColor: 0x127560
+        });
 
-    //Add view to the body
-    document.body.appendChild(app.canvas);
+        //Add view to the body
+        document.body.appendChild(app.canvas);
 
-    //Expose the app to document
-    window.app = app;
+        //Expose the app to document
+        window.app = app;
 
-    //Load in sprite
-    await PIXI.Assets.load("img/fish1.png");
-    await PIXI.Assets.load("img/fish2.png");
-    await PIXI.Assets.load("img/fish3.png");
-    await PIXI.Assets.load("img/rock.webp");
-    await PIXI.Assets.load("img/plant1.png");
-    await PIXI.Assets.load("img/plant2.png");
+        //Make a button right
+        class Button extends PIXI.Container {
 
-    //Add out first sprite
-    let fish1 = PIXI.Sprite.from("img/fish1.png");
-        fish1.scale.set(0.30);
-        fish1.anchor.x = 0.5;
-        fish1.anchor.y = 0.5;
-        fish1.x = 1000;
+            //Constructor
+            constructor(text, w, h, color) {
+                super();
 
-    let fish2 = PIXI.Sprite.from("img/fish2.png");
-        fish2.scale.set(0.05);
-        fish2.anchor.x = 0.5;
-        fish2.anchor.y = 0.5;
-        fish2.x = 600;
-    
-    let fish3 = PIXI.Sprite.from("img/fish3.png");
-        fish3.scale.set(0.1);
-        fish3.anchor.x = 0.5;
-        fish3.anchor.y = 0.5;
-        fish3.x = 425;
-        fish3.y = 400;
+                //set defaults
+                if (text == undefined) {
+                    text = "Button";
+                }
+                if (w == undefined) {
+                    w = 100;
+                }
+                if (h == undefined) {
+                    h = 50;
+                }
+                if (color == undefined) {
+                    color = 0x990000;
+                }
 
-    let fish4 = PIXI.Sprite.from("img/fish3.png");
-        fish4.scale.set(0.1);
-        fish4.anchor.x = 0.5;
-        fish4.anchor.y = 0.5;
-        fish4.x = 500;
-        fish4.y = 400;
+                let body = new PIXI.Graphics();
+                body.fill(color);
+                body.filletRect(0, 0, w, h, 10);
+                body.fill();
 
-    let fish5 = PIXI.Sprite.from("img/fish3.png");
-        fish5.scale.set(0.1);
-        fish5.anchor.x = 0.5;
-        fish5.anchor.y = 0.5;
-        fish5.x = 530;
-        fish5.y = 450;
+                this.addChild(body);
+                this.body = body;
 
-    let fish6 = PIXI.Sprite.from("img/fish3.png");
-        fish6.scale.set(0.1);
-        fish6.anchor.x = 0.5;
-        fish6.anchor.y = 0.5;
-        fish6.x = 570;
-        fish6.y = 375;
+                //Button label
+                let label = new PIXI.Text(text);
+                label.anchor.set(0.5);
+                label.x = body.width / 2;
+                label.y = body.height / 2;
 
-    let fish7 = PIXI.Sprite.from("img/fish3.png");
-        fish7.scale.set(0.1);
-        fish7.anchor.x = 0.5;
-        fish7.anchor.y = 0.5;
-        fish7.x = 500;
-        fish7.y = 355;
+                this.addChild(label);
 
-    let plant1 = PIXI.Sprite.from("img/plant1.png");
+                //Make it interactive
+                this.interactive = true;
+            }
+        }
+
+        //Fish Class
+        class Fish extends PIXI.Container {
+
+            //Constructor
+            constructor(sprite) {
+                super();
+
+                //set defaults
+                if (sprite == undefined) {
+                    sprite = "img/fish1.png";
+                }
+
+                let fish = PIXI.Sprite.from(sprite);
+                    fish.anchor.set(0.5);
+
+                this.addChild(fish);
+                this.fish = fish;
+
+                //Make it interactive
+                this.interactive = true;
+            }
+        }
+
+        //Load in sprite
+        await PIXI.Assets.load("img/fish1.png");
+        await PIXI.Assets.load("img/fish2.png");
+        await PIXI.Assets.load("img/fish3.png");
+        await PIXI.Assets.load("img/rock.webp");
+        await PIXI.Assets.load("img/plant1.png");
+        await PIXI.Assets.load("img/plant2.png");
+        await PIXI.Assets.load("img/wood.jpg");
+
+        let plant1 = PIXI.Sprite.from("img/plant1.png");
         plant1.scale.set(0.75);
         plant1.anchor.x = 0.5;
         plant1.anchor.y = 0.5;
-        plant1.x = 800;
+        plant1.x = 750;
         plant1.y = 515;
 
-    let plant2 = PIXI.Sprite.from("img/plant2.png");
+        let plant2 = PIXI.Sprite.from("img/plant2.png");
         plant2.scale.set(0.75);
         plant2.anchor.x = 0.5;
         plant2.anchor.y = 0.5;
-        plant2.x = 1300;
+        plant2.x = 750 + 500;
         plant2.y = 500;
 
-    let rock = PIXI.Sprite.from("img/rock.webp");
+        let rock = PIXI.Sprite.from("img/rock.webp");
         rock.scale.set(0.5);
         rock.anchor.x = 0.5;
         rock.anchor.y = 0.5;
-        rock.x = 300;
+        rock.x = 750 - 500;
         rock.y = 500;
 
-    //Add it to stage
-    app.stage.addChild(fish1);
-    app.stage.addChild(fish2);
+        let base = PIXI.Sprite.from("img/wood.jpg");
+        base.x = 0;
+        base.y = height;
 
-    //Fish container
-    let fishContainer = new PIXI.Container();
+        let fish1 = new Fish("img/fish1.png");
+            fish1.x = 1000;
+            fish1.scale.set(0.3);
+
+        let fish2 = new Fish("img/fish2.png");
+            fish2.x = 600;
+            fish2.scale.set(0.05);
+
+        let fish3 = new Fish("img/fish3.png");
+            fish3.x = 425;
+            fish3.y = 400;
+            fish3.scale.set(0.11);
+
+        let fish4 = new Fish("img/fish3.png");
+            fish4.x = 500;
+            fish4.y = 400;
+            fish4.scale.set(0.12);
+
+        let fish5 = new Fish("img/fish3.png");
+            fish5.x = 530;
+            fish5.y = 450;
+            fish5.scale.set(0.09);
+
+        let fish6 = new Fish("img/fish3.png");
+            fish6.x = 570;
+            fish6.y = 375;
+            fish6.scale.set(0.12);
+
+        let fish7 = new Fish("img/fish3.png");
+            fish7.x = 500;
+            fish7.y = 355;
+            fish7.scale.set(0.1);
+
+        let ourButton = new Button("Change Color", 200, 75, 0xc7c5c5);
+        ourButton.x = (width / 2) - 100;
+        ourButton.y = height + 60;
+        ourButton.on("pointerover", () => {
+            ourButton.tint = 0xc7c5c5;
+        })
+        ourButton.on("pointerout", () => {
+            ourButton.tint = 0xFFFFFF;
+        })
+        ourButton.on("pointerdown", () => {
+            let randomFish = Math.floor(Math.random() * 3) + 1;
+            console.log(randomFish);
+
+            if (randomFish == 1) {
+                fish1.tint = { r: Math.floor(Math.random() * 256), g: Math.floor(Math.random() * 256), b: Math.floor(Math.random() * 256) };
+            }
+            else if (randomFish == 2) {
+                fish2.tint = { r: Math.floor(Math.random() * 256), g: Math.floor(Math.random() * 256), b: Math.floor(Math.random() * 256) };
+            }
+            else if (randomFish == 3) {
+                fishContainer.tint = { r: Math.floor(Math.random() * 256), g: Math.floor(Math.random() * 256), b: Math.floor(Math.random() * 256) };
+            }
+        })
+
+        //Add it to stage
+        app.stage.addChild(fish1);
+        app.stage.addChild(fish2);
+
+        //Fish container
+        let fishContainer = new PIXI.Container();
         fishContainer.addChild(fish3);
         fishContainer.addChild(fish4);
         fishContainer.addChild(fish5);
         fishContainer.addChild(fish6);
         fishContainer.addChild(fish7);
 
-    app.stage.addChild(fishContainer);
+        app.stage.addChild(fishContainer);
 
-    app.stage.addChild(rock);
-    app.stage.addChild(plant1);
-    app.stage.addChild(plant2);
+        app.stage.addChild(rock);
+        app.stage.addChild(plant1);
+        app.stage.addChild(plant2);
 
-    //Counter
-    let counter = 0;
-    let hitRight1 = false;
-    let hitRight2 = false;
-    let hitRight3 = false;
+        app.stage.addChild(base);
+        app.stage.addChild(ourButton);
 
-    /*
-    function moveRight(fish) {
-        if (!(fish.x > (width - ((fish.width / 2))))) {
-            fish.x++;
-        }
-    }
+        //Counter
+        let counter = 0;
+        let hitRight1 = false;
+        let hitRight2 = false;
+        let hitRight3 = false;
 
-    function moveLeft(fish) {
-        if (!(fish.x < (0 + ((fish.width / 2))))) {
-            fish.x--;
-        }
-    }
+        //Animation loop
+        function loop() {
+            counter++;
 
-    function moveUp(fish) {
-        if (!(fish.y < (0 + ((fish.height / 2))))) {
-            fish.y--;
-        }
-    }
+            fish1.y = (Math.sin(counter / 80) * 20) + 325;
+            fish1.angle = (Math.sin(counter / 80) * 2);
 
-    function moveDown(fish) {
-        if (!(fish.y > (height - ((fish.height / 2))))) {
-            fish.y++;
-        }
-    }
-    */
+            fish2.y = (Math.sin(counter / 70) * 30) + 150;
+            fish2.angle = (Math.sin(counter / 40) * -2);
 
-    //Animation loop
-    function loop() {
-        counter++;
+            fishContainer.y = (Math.sin(counter / 70) * 10);
+            fishContainer.angle = (Math.sin(counter / 80) * -0.5);
 
-        fish1.y = (Math.sin(counter/80) * 20) + 325;
-        fish1.angle = (Math.sin(counter/80) * 2);
+            plant1.scale.x = ((Math.sin(counter / 100) * -.03) + 1);
+            plant2.scale.x = ((Math.sin(counter / 135) * -.03) + 1);
+            rock.scale.x = ((Math.sin(counter / 150) * -.02) + 0.75);
 
-        fish2.y = (Math.sin(counter/70) * 30) + 150;
-        fish2.angle = (Math.sin(counter/40) * -2);
+            console.log(fish1.x);
+            
+            //Fish 1 Move
+            if ((fish1.x >= (width - (fish1.width / 2) - 50))) {
+                hitRight1 = true;
+            }
 
-        fishContainer.y = (Math.sin(counter/70) * 10);
-        fishContainer.angle = (Math.sin(counter/80) * -0.5);
+            if (fish1.x <= (0 + (fish1.width / 2) + 50)) {
+                hitRight1 = false;
+            }
 
-        plant1.scale.x = ((Math.sin(counter/100) * -.03) + 1);
-        plant2.scale.x = ((Math.sin(counter/135) * -.03) + 1);
-        rock.scale.x = ((Math.sin(counter/150) * -.02) + 0.75);
+            if (!hitRight1) {
+                fish1.x += 0.4;
+                fish1.scale.x = ((Math.sin(counter / 100) * -.01) - .30);
+            }
+            else {
+                fish1.x -= 0.4;
+                fish1.scale.x = ((Math.sin(counter / 100) * -.01) + .30);
+            }
 
-        //Fish 1 Move
-        if ((fish1.x >= (width - (fish1.width / 2) - 50))) {
-            hitRight1 = true;
-        }
+            //Fish 2 Move
+            if ((fish2.x >= (width - (fish2.width / 2) - 50))) {
+                hitRight2 = true;
+            }
 
-        if (fish1.x <= (0 + (fish1.width / 2) + 50)) {
-            hitRight1 = false;
-        }
+            if (fish2.x <= (0 + (fish2.width / 2) + 50)) {
+                hitRight2 = false;
+            }
 
-        if (!hitRight1) {
-            fish1.x += 0.4;
-            fish1.scale.x = ((Math.sin(counter/100) * -.01) - .30);
-        }
-        else {
-            fish1.x -= 0.4;
-            fish1.scale.x = ((Math.sin(counter/100) * -.01) + .30);
-        }
+            if (!hitRight2) {
+                fish2.x += 1.5;
+                fish2.scale.x = ((Math.sin(counter / 40) * -.004) + -.06);
+            }
+            else {
+                fish2.x -= 1.5;
+                fish2.scale.x = ((Math.sin(counter / 40) * -.004) + .06);
+            }
 
-        //Fish 2 Move
-        if ((fish2.x >= (width - (fish2.width / 2) - 50))) {
-            hitRight2 = true;
-        }
+            //Fish Container Move
+            if ((fishContainer.x >= (width - 600))) {
+                hitRight3 = true;
+            }
 
-        if (fish2.x <= (0 + (fish2.width / 2) + 50)) {
-            hitRight2 = false;
-        }
+            if (fishContainer.x <= (0 - 375)) {
+                hitRight3 = false;
+            }
 
-        if (!hitRight2) {
-            fish2.x += 1.5;
-            fish2.scale.x = ((Math.sin(counter/40) * -.004) + -.06);
-        }
-        else {
-            fish2.x -= 1.5;
-            fish2.scale.x = ((Math.sin(counter/40) * -.004) + .06);
-        }
+            if (!hitRight3) {
+                fishContainer.x += 2;
+                fish3.scale.x = ((Math.sin(counter / 50) * -.01) - .1);
+                fish4.scale.x = ((Math.sin(counter / 55) * -.01) - .1);
+                fish5.scale.x = ((Math.sin(counter / 43) * -.01) - .1);
+                fish6.scale.x = ((Math.sin(counter / 56) * -.01) - .1);
+                fish7.scale.x = ((Math.sin(counter / 52) * -.01) - .1);
+            }
+            else {
+                fishContainer.x -= 2;
+                fish3.scale.x = ((Math.sin(counter / 62) * -.01) + .1);
+                fish4.scale.x = ((Math.sin(counter / 44) * -.01) + .1);
+                fish5.scale.x = ((Math.sin(counter / 55) * -.01) + .1);
+                fish6.scale.x = ((Math.sin(counter / 58) * -.01) + .1);
+                fish7.scale.x = ((Math.sin(counter / 46) * -.01) + .1);
+            }
 
-        //Fish Container Move
-        if ((fishContainer.x >= (width - 600))) {
-            hitRight3 = true;
-        }
-
-        if (fishContainer.x <= (0 - 375)) {
-            hitRight3 = false;
-        }
-
-        if (!hitRight3) {
-            fishContainer.x += 2;
-            fish3.scale.x = ((Math.sin(counter/50) * -.01) - .1);
-            fish4.scale.x = ((Math.sin(counter/55) * -.01) - .1);
-            fish5.scale.x = ((Math.sin(counter/43) * -.01) - .1);
-            fish6.scale.x = ((Math.sin(counter/56) * -.01) - .1);
-            fish7.scale.x = ((Math.sin(counter/52) * -.01) - .1);
-        }
-        else {
-            fishContainer.x -= 2;
-            fish3.scale.x = ((Math.sin(counter/62) * -.01) + .1);
-            fish4.scale.x = ((Math.sin(counter/44) * -.01) + .1);
-            fish5.scale.x = ((Math.sin(counter/55) * -.01) + .1);
-            fish6.scale.x = ((Math.sin(counter/58) * -.01) + .1);
-            fish7.scale.x = ((Math.sin(counter/46) * -.01) + .1);
+            requestAnimationFrame(loop);
         }
 
+        loop();
 
-        
-        requestAnimationFrame(loop);
-    }
-
-    loop();
-
-</script>
+    </script>
 
 </body>
+
 </html>
