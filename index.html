@@ -88,9 +88,6 @@
 
                 this.addChild(fish);
                 this.fish = fish;
-
-                //Make it interactive
-                this.interactive = true;
             }
         }
 
@@ -134,6 +131,7 @@
         let fish1 = new Fish("img/fish1.png");
             fish1.x = 1000;
             fish1.scale.set(0.3);
+            fish1.interactive = true;
             fish1.on("pointerdown", () => {
                 buttonDragged = true;
             })
