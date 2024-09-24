@@ -129,6 +129,7 @@
         base.y = height;
 
         let buttonDragged = false;
+        let fish1YOffset = 325;
 
         let fish1 = new Fish("img/fish1.png");
             fish1.x = 1000;
@@ -188,7 +189,6 @@
         })
         ourButton.on("pointerdown", () => {
             let randomFish = Math.floor(Math.random() * 3) + 1;
-            console.log(randomFish);
 
             if (randomFish == 1) {
                 fish1.tint = { r: Math.floor(Math.random() * 256), g: Math.floor(Math.random() * 256), b: Math.floor(Math.random() * 256) };
@@ -233,7 +233,9 @@
             counter++;
 
             if (!buttonDragged) {
-                fish1.y = (Math.sin(counter / 80) * 20) + 325;
+                fish1.y = (Math.sin(counter / 80) * 20) + fish1YOffset;
+            } else {
+                fish1YOffset = fish1.y;
             }
             
             fish1.angle = (Math.sin(counter / 80) * 2);
@@ -247,8 +249,6 @@
             plant1.scale.x = ((Math.sin(counter / 100) * -.03) + 1);
             plant2.scale.x = ((Math.sin(counter / 135) * -.03) + 1);
             rock.scale.x = ((Math.sin(counter / 150) * -.02) + 0.75);
-
-            console.log(fish1.x);
             
             //Fish 1 Move
             if ((fish1.x >= (width - (fish1.width / 2) - 50))) {
